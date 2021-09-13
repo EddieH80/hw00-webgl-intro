@@ -74,7 +74,7 @@ function main() {
     {
       prevTesselations = controls.tesselations;
       icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, prevTesselations);
-      icosphere.create();
+      //icosphere.create();
       square = new Square(vec3.fromValues(0, 0, 0));
       square.create();
     }
