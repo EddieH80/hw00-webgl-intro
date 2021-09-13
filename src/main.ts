@@ -64,7 +64,7 @@ function main() {
 
   const renderer = new OpenGLRenderer(canvas);
   renderer.setClearColor(0.2, 0.2, 0.2, 1);
-  gl.enable(gl.DEPTH_TEST);
+    gl.enable(gl.DEPTH_TEST);
 
   const lambert = new ShaderProgram([
     new Shader(gl.VERTEX_SHADER, require('./shaders/lambert-vert.glsl')),
@@ -72,8 +72,9 @@ function main() {
   ]);
 
     function changeColor() {
-        renderer.setClearColor(controls.color[0] / 255, controls.color[1] / 255, controls.color[2] / 255, 1);
+        renderer.setGeoColor(lambert, controls.color[0] / 255, controls.color[1] / 255, controls.color[2] / 255, 1);
     }
+
 
   // This function will be called every frame
   function tick() {

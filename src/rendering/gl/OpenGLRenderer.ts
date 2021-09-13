@@ -13,6 +13,10 @@ class OpenGLRenderer {
     gl.clearColor(r, g, b, a);
   }
 
+    setGeoColor(prog: ShaderProgram, r: number, g: number, b: number, a: number) {
+        prog.setGeometryColor(vec4.fromValues(r, g, b, a));
+    }
+
   setSize(width: number, height: number) {
     this.canvas.width = width;
     this.canvas.height = height;

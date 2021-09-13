@@ -16,19 +16,20 @@ class Cube extends Drawable {
 
     create() {
 
+        // I think the triangles should all have the same normals
         this.indices = new Uint32Array([
-            0, 3, 6,
-            3, 6, 9,
-            0, 6, 9,
+            2, 5, 11,
+            2, 8, 11,
+            0, 6, 18,
             0, 12, 18,
-            0, 3, 12,
-            3, 12, 15,
+            1, 13, 16,
+            1, 4, 16,
             3, 15, 21,
             3, 9, 21,
-            6, 18, 9,
-            18, 21, 9,
-            12, 15, 18,
-            15, 18, 21]);
+            7, 19, 22,
+            7, 10, 22,
+            14, 17, 23,
+            14, 20, 23]);
         this.normals = new Float32Array([
             -1, 0, 0, 0,
             0, 1, 0, 0,
