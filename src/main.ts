@@ -13,13 +13,15 @@ import ShaderProgram, {Shader} from './rendering/gl/ShaderProgram';
 // This will be referred to by dat.GUI's functions that add GUI elements.
 const controls = {
   tesselations: 5,
-  'Load Scene': loadScene, // A function pointer, essentially
+    'Load Scene': loadScene, // A function pointer, essentially
+    color : [0, 128, 255],
 };
 
 let icosphere: Icosphere;
 let square: Square;
 let cube: Cube;
 let prevTesselations: number = 5;
+let prevColor: number[] = [0, 0, 0]
 
 function loadScene() {
   icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, controls.tesselations);
@@ -42,7 +44,8 @@ function main() {
   // Add controls to the gui
   const gui = new DAT.GUI();
   gui.add(controls, 'tesselations', 0, 8).step(1);
-  gui.add(controls, 'Load Scene');
+    gui.add(controls, 'Load Scene');
+    gui.addColor(controls, 'color').onChange(changeColor);
 
   // get canvas and webgl context
   const canvas = <HTMLCanvasElement> document.getElementById('canvas');
@@ -68,6 +71,10 @@ function main() {
     new Shader(gl.FRAGMENT_SHADER, require('./shaders/lambert-frag.glsl')),
   ]);
 
+    function changeColor() {
+        renderer.setClearColor(controls.color[0] / 255, controls.color[1] / 255, controls.color[2] / 255, 1);
+    }
+
   // This function will be called every frame
   function tick() {
     camera.update();
@@ -85,8 +92,8 @@ function main() {
       cube.create();
     }
     renderer.render(camera, lambert, [
-      icosphere,
-      square,
+      //icosphere,
+      //square,
       cube
     ]);
     stats.end();
