@@ -16,7 +16,6 @@ class Cube extends Drawable {
 
     create() {
 
-        // I think the triangles should all have the same normals
         this.indices = new Uint32Array([
             2, 5, 11,
             2, 8, 11,

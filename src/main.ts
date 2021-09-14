@@ -44,7 +44,7 @@ function main() {
   const gui = new DAT.GUI();
   gui.add(controls, 'tesselations', 0, 8).step(1);
     gui.add(controls, 'Load Scene');
-    gui.addColor(controls, 'color').onChange(tick);
+    gui.addColor(controls, 'color').onChange(updateColor);
 
   // get canvas and webgl context
   const canvas = <HTMLCanvasElement> document.getElementById('canvas');
@@ -69,6 +69,15 @@ function main() {
     new Shader(gl.VERTEX_SHADER, require('./shaders/lambert-vert.glsl')),
     new Shader(gl.FRAGMENT_SHADER, require('./shaders/lambert-frag.glsl')),
   ]);
+
+    function updateColor() {
+        let color = vec4.fromValues(controls.color[0] / 255, controls.color[1] / 255, controls.color[2] / 255, 1);
+        renderer.render(camera, lambert, [
+            //icosphere,
+            //square,
+            cube
+        ], color);
+    }
 
 
   // This function will be called every frame
