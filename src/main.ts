@@ -21,6 +21,7 @@ let icosphere: Icosphere;
 let square: Square;
 let cube: Cube;
 let prevTesselations: number = 5;
+let time: number = 0;
 
 function loadScene() {
   icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, controls.tesselations);
@@ -76,7 +77,7 @@ function main() {
             //icosphere,
             //square,
             cube
-        ], color);
+        ], color, time);
     }
 
 
@@ -102,8 +103,9 @@ function main() {
       //icosphere,
       //square,
       cube
-    ], color);
-    stats.end();
+    ], color, time);
+      stats.end();
+      time++;
 
     // Tell the browser to call `tick` again whenever it renders a new frame
     requestAnimationFrame(tick);
