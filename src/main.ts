@@ -13,8 +13,9 @@ import ShaderProgram, {Shader} from './rendering/gl/ShaderProgram';
 // This will be referred to by dat.GUI's functions that add GUI elements.
 const controls = {
   tesselations: 5,
-    'Load Scene': loadScene, // A function pointer, essentially
-    color : [255, 0, 0],
+  'Load Scene': loadScene, // A function pointer, essentially
+  Color: [255, 0, 0],
+  Shader: 1,
 };
 
 let icosphere: Icosphere;
@@ -22,6 +23,8 @@ let square: Square;
 let cube: Cube;
 let prevTesselations: number = 5;
 let time: number = 0;
+let prevShader: number = 1;
+let currShader: ShaderProgram;
 
 function loadScene() {
   icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, controls.tesselations);
@@ -44,8 +47,9 @@ function main() {
   // Add controls to the gui
   const gui = new DAT.GUI();
   gui.add(controls, 'tesselations', 0, 8).step(1);
-    gui.add(controls, 'Load Scene');
-    gui.addColor(controls, 'color').onChange(updateColor);
+  gui.add(controls, 'Load Scene');
+  gui.addColor(controls, 'Color').onChange(updateColor);
+  gui.add(controls, 'Shader', 0, 4).step(1);
 
   // get canvas and webgl context
   const canvas = <HTMLCanvasElement> document.getElementById('canvas');
@@ -71,14 +75,29 @@ function main() {
     new Shader(gl.FRAGMENT_SHADER, require('./shaders/lambert-frag.glsl')),
   ]);
 
-    function updateColor() {
-        let color = vec4.fromValues(controls.color[0] / 255, controls.color[1] / 255, controls.color[2] / 255, 1);
-        renderer.render(camera, lambert, [
-            //icosphere,
-            //square,
-            cube
-        ], color, time);
-    }
+  const lambertDeform = new ShaderProgram([
+    new Shader(gl.VERTEX_SHADER, require('./shaders/deform-vert.glsl')),
+    new Shader(gl.FRAGMENT_SHADER, require('./shaders/lambert-frag.glsl')),
+  ]);
+
+  const noise = new ShaderProgram([
+    new Shader(gl.VERTEX_SHADER, require('./shaders/lambert-vert.glsl')),
+    new Shader(gl.FRAGMENT_SHADER, require('./shaders/noise-frag.glsl')),
+  ]);
+
+  const noiseDeform = new ShaderProgram([
+    new Shader(gl.VERTEX_SHADER, require('./shaders/deform-vert.glsl')),
+    new Shader(gl.FRAGMENT_SHADER, require('./shaders/noise-frag.glsl')),
+  ]);
+
+  currShader = lambert;
+
+  function updateColor() {
+    let col = vec4.fromValues(controls.Color[0] / 255,
+                              controls.Color[1] / 255,
+                              controls.Color[2] / 255, 1);
+    renderer.render(camera, lambert, [cube], col, time);
+  }
 
 
   // This function will be called every frame
@@ -98,12 +117,27 @@ function main() {
       cube.create();
     }
 
-    let color = vec4.fromValues(controls.color[0] / 255, controls.color[1] / 255, controls.color[2] / 255, 1);
-    renderer.render(camera, lambert, [
+    if (controls.Shader != prevShader) {
+      prevShader = controls.Shader;
+      if (controls.Shader == 1) {
+        currShader = lambert;
+      } else if (controls.Shader == 2) {
+        currShader = lambertDeform;
+      } else if (controls.Shader == 3) {
+        currShader = noise;
+      } else if (controls.Shader == 4) {
+        currShader = noiseDeform;
+      }
+    }
+
+    let col = vec4.fromValues(controls.Color[0] / 255,
+                              controls.Color[1] / 255,
+                              controls.Color[2] / 255, 1);
+    renderer.render(camera, currShader, [
       //icosphere,
       //square,
       cube
-    ], color, time);
+    ], col, time);
       stats.end();
       time++;
 

@@ -50,9 +50,8 @@ void main()
 
     fs_LightVec = lightPos - modelposition;  // Compute the direction in which the light source lies
 
-    // Calculate default and sphere positions
+    // Calculate default and outward positions
     vec3 defaultPos = vec3(modelposition);
-
     vec3 outPos = normalize(defaultPos) * 3.f * sin(float(u_Time) / 150.f);
 
     // Time-changing function
